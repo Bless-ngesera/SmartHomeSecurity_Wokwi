@@ -539,8 +539,13 @@
       document.getElementById('kpiAlarmsSub').innerHTML = `${nightAlarms} at night`;
       document.getElementById('kpiAccess').innerText = access;
 
-      if (metadata && metadata.accuracy) {
-        document.getElementById('kpiAccuracy').innerHTML = (metadata.accuracy * 100).toFixed(1) + '%';
+      // ========== FIX: Handle different accuracy field names ==========
+      let accuracyValue = null;
+      if (metadata) {
+        accuracyValue = metadata.test_accuracy || metadata.accuracy || metadata.cv_accuracy;
+      }
+      if (accuracyValue !== null) {
+        document.getElementById('kpiAccuracy').innerHTML = (accuracyValue * 100).toFixed(1) + '%';
         document.getElementById('kpiAccuracySub').innerHTML = metadata.trained_at ? `Trained: ${new Date(metadata.trained_at).toLocaleDateString()}` : '';
       } else {
         document.getElementById('kpiAccuracy').innerHTML = '—';
@@ -552,8 +557,9 @@
         modelDiv.innerHTML = `
           <strong>Model:</strong> ${metadata.model_name}<br>
           <strong>CV Accuracy:</strong> ${(metadata.cv_accuracy * 100).toFixed(1)}% ± ${(metadata.cv_std * 100).toFixed(1)}%<br>
+          <strong>Test Accuracy:</strong> ${(metadata.test_accuracy * 100).toFixed(1)}%<br>
           <strong>Test F1:</strong> ${(metadata.test_f1 * 100).toFixed(1)}%<br>
-          <strong>Training set:</strong> ${metadata.n_real_events || 0} real + ${metadata.n_synthetic || 0} synthetic<br>
+          <strong>Top Feature:</strong> ${Object.keys(metadata.top_features || {})[0] || 'N/A'}<br>
           <strong>Trained:</strong> ${metadata.trained_at ? new Date(metadata.trained_at).toLocaleString() : 'N/A'}
         `;
       } else {
