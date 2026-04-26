@@ -1,0 +1,6 @@
+{
+  "libraries": [
+    "MFRC522",
+    "Servo"
+  ]
+}
