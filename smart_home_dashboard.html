@@ -147,12 +147,12 @@
     /* ========== MAIN GRID ========== */
     .main-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(100%, 1fr));
-      gap: 16px;
+      grid-template-columns: 1fr;
+      gap: 20px;
       margin-bottom: 20px;
     }
 
-    /* Tablet and Desktop breakpoint */
+    /* Tablet and Desktop - side by side layout */
     @media (min-width: 768px) {
       .main-grid {
         grid-template-columns: repeat(2, 1fr);
@@ -163,7 +163,10 @@
       background: #0f172a;
       border: 1px solid #1e293b;
       border-radius: 16px;
-      padding: 14px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
     }
 
     .card-header {
@@ -172,58 +175,91 @@
       align-items: center;
       flex-wrap: wrap;
       gap: 8px;
-      margin-bottom: 14px;
-      padding-bottom: 10px;
+      margin-bottom: 16px;
+      padding-bottom: 12px;
       border-bottom: 1px solid #1e293b;
+      flex-shrink: 0;
     }
 
     .card-header h3 {
-      font-size: clamp(0.85rem, 4vw, 1rem);
+      font-size: clamp(0.9rem, 4vw, 1.1rem);
       font-weight: 600;
       color: #cbd5e1;
     }
 
     /* ========== EVENT TABLE ========== */
+    .event-table-wrapper {
+      overflow-x: auto;
+      margin: 0 -4px;
+      padding: 0 4px;
+      -webkit-overflow-scrolling: touch;
+    }
+
     .event-table {
       width: 100%;
+      min-width: 600px;
       border-collapse: collapse;
-      font-size: clamp(0.65rem, 2.5vw, 0.75rem);
+      font-size: 0.75rem;
+    }
+
+    /* For very small screens, stack the table into cards */
+    @media (max-width: 550px) {
+      .event-table-wrapper {
+        overflow-x: visible;
+      }
+      .event-table, .event-table thead, .event-table tbody, .event-table tr, .event-table th, .event-table td {
+        display: block;
+      }
+      .event-table thead {
+        display: none;
+      }
+      .event-table tr {
+        margin-bottom: 12px;
+        border: 1px solid #1e293b;
+        border-radius: 12px;
+        padding: 10px;
+        background: #0f172a;
+      }
+      .event-table td {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 8px 0;
+        border-bottom: 1px solid #1e293b;
+        text-align: right;
+      }
+      .event-table td:last-child {
+        border-bottom: none;
+      }
+      .event-table td::before {
+        content: attr(data-label);
+        font-weight: 600;
+        color: #64748b;
+        text-align: left;
+        flex: 1;
+        font-size: 0.7rem;
+      }
+      .event-table td span {
+        text-align: right;
+        flex: 1;
+      }
     }
 
     .event-table th {
       text-align: left;
-      padding: 8px 4px;
+      padding: 10px 6px;
       color: #64748b;
       font-weight: 600;
       border-bottom: 1px solid #1e293b;
     }
 
     .event-table td {
-      padding: 8px 4px;
+      padding: 10px 6px;
       border-bottom: 1px solid #1f2a3a;
-      word-break: break-word;
-    }
-
-    /* Hide less important columns on very small screens */
-    @media (max-width: 550px) {
-      .event-table th:nth-child(4),
-      .event-table td:nth-child(4),
-      .event-table th:nth-child(5),
-      .event-table td:nth-child(5) {
-        display: none;
-      }
-    }
-
-    /* Hide confidence column on medium-small screens */
-    @media (max-width: 480px) {
-      .event-table th:nth-child(6),
-      .event-table td:nth-child(6) {
-        display: none;
-      }
     }
 
     .scrollable {
-      max-height: 350px;
+      max-height: 400px;
       overflow-y: auto;
       -webkit-overflow-scrolling: touch;
     }
@@ -231,9 +267,9 @@
     /* ========== BADGES ========== */
     .pill {
       display: inline-block;
-      padding: 3px 8px;
-      border-radius: 12px;
-      font-size: 0.65rem;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 0.7rem;
       font-weight: 600;
       white-space: nowrap;
     }
@@ -249,18 +285,19 @@
     .chart-container {
       position: relative;
       width: 100%;
-      min-height: 200px;
+      min-height: 250px;
+      flex: 1;
     }
     
     canvas {
-      max-height: 200px;
+      max-height: 250px;
       width: 100%;
     }
 
     /* ========== THINGSPEAK IFRAMES ========== */
     .ts-iframe {
       width: 100%;
-      height: clamp(180px, 30vw, 240px);
+      height: clamp(200px, 35vw, 260px);
       border: none;
       border-radius: 12px;
       background: #fff;
@@ -276,9 +313,9 @@
     /* ========== FOOTER ========== */
     footer {
       text-align: center;
-      padding: 16px;
+      padding: 20px;
       color: #475569;
-      font-size: 0.65rem;
+      font-size: 0.7rem;
       border-top: 1px solid #1e293b;
       margin-top: 20px;
     }
@@ -289,7 +326,8 @@
       .kpi-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
       .kpi-card { padding: 10px; }
       .kpi-value { font-size: 1.3rem; }
-      .card { padding: 10px; }
+      .card { padding: 12px; }
+      .card-header h3 { font-size: 0.85rem; }
     }
   </style>
 </head>
@@ -345,14 +383,16 @@
         <span style="font-size:0.65rem; color:#475569;">last 30 events</span>
       </div>
       <div class="scrollable">
-        <table class="event-table">
-          <thead>
-            <tr><th>TIME</th><th>TYPE</th><th>DETAIL</th><th>EDGE AI</th><th>CLOUD AI</th><th>CONF</th></tr>
-          </thead>
-          <tbody id="eventTableBody">
-            <tr><td colspan="6" style="text-align:center; padding:30px;">No events yet — trigger in Wokwi</td></tr>
-          </tbody>
-        </table>
+        <div class="event-table-wrapper">
+          <table class="event-table" id="eventTable">
+            <thead>
+              <tr><th>TIME</th><th>TYPE</th><th>DETAIL</th><th>EDGE AI</th><th>CLOUD AI</th><th>CONF</th></tr>
+            </thead>
+            <tbody id="eventTableBody">
+              <tr><td colspan="6" style="text-align:center; padding:30px;">No events yet — trigger in Wokwi</td></tr>
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
 
@@ -529,6 +569,7 @@
       }
       eventList.forEach(e => lastSeenIds.add(e.id));
 
+      // Build table rows with data-label attributes for mobile view
       const tbody = document.getElementById('eventTableBody');
       if (eventList.length === 0) {
         tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding:30px;">⚠️ No events yet — trigger PIR motion or RFID in Wokwi</td></tr>';
@@ -541,12 +582,12 @@
           const cloudText = (e.cloud_prediction === 1) ? '🚨 Suspicious' : (e.cloud_prediction === 0) ? '✅ Normal' : '— pending —';
           const confidence = e.cloud_confidence ? `${(e.cloud_confidence * 100).toFixed(0)}%` : (e.ai_confidence ? `${(e.ai_confidence * 100).toFixed(0)}%` : '—');
           return `<tr>
-            <td style="white-space:nowrap;">${e.timestamp ? e.timestamp.slice(11, 19) : '—'}</td>
-            <td><span class="pill ${typeClass}">${e.type || 'SYSTEM'}</span></td>
-            <td>${(e.detail || '').substring(0, 50)}</td>
-            <td><span class="pill ${edgeClass}">${edgeText}</span></td>
-            <td><span class="pill ${cloudClass}">${cloudText}</span></td>
-            <td>${confidence}</td>
+            <td data-label="TIME">${e.timestamp ? e.timestamp.slice(11, 19) : '—'}</td>
+            <td data-label="TYPE"><span class="pill ${typeClass}">${e.type || 'SYSTEM'}</span></td>
+            <td data-label="DETAIL">${(e.detail || '').substring(0, 50)}</td>
+            <td data-label="EDGE AI"><span class="pill ${edgeClass}">${edgeText}</span></td>
+            <td data-label="CLOUD AI"><span class="pill ${cloudClass}">${cloudText}</span></td>
+            <td data-label="CONF">${confidence}</td>
           </tr>`;
         }).join('');
       }
